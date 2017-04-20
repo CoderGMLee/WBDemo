@@ -37,30 +37,30 @@
     self.startBGView.frame = self.view.bounds;
     [self.view addSubview:self.startBGView];
 
-//    if ([[WBFileManager sharedInstance] hasXMLFile]) {
-//        NSData * data = [[WBFileManager sharedInstance] getXMLFile];
-//        [[WBSocketManager sharedInstance] downloadComplete:data];
-//        [self.startBGView setHidden:true];
-//    } else {
-//        self.mainView = [[NSBundle mainBundle] loadNibNamed:@"WBMainContainerView" owner:nil options:nil][0];
-//        self.mainView.frame = self.view.bounds;
-//        self.mainView.delegate = self;
-//        [self.view addSubview:self.mainView];
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [[WBSocketManager sharedInstance] udpStartMonitor];
-//        });
-//    }
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [[WBSocketManager sharedInstance] scanOther];
-//    });
+    if ([[WBFileManager sharedInstance] hasXMLFile]) {
+        NSData * data = [[WBFileManager sharedInstance] getXMLFile];
+        [[WBSocketManager sharedInstance] downloadComplete:data];
+        [self.startBGView setHidden:true];
+    } else {
+        self.mainView = [[NSBundle mainBundle] loadNibNamed:@"WBMainContainerView" owner:nil options:nil][0];
+        self.mainView.frame = self.view.bounds;
+        self.mainView.delegate = self;
+        [self.view addSubview:self.mainView];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[WBSocketManager sharedInstance] udpStartMonitor];
+        });
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[WBSocketManager sharedInstance] scanOther];
+    });
 
 
 //    测试数据
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSString * resourcePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"xml"];
-        NSData * data = [[NSData alloc] initWithContentsOfFile:resourcePath];
-        [[WBSocketManager sharedInstance] downloadComplete:data];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        NSString * resourcePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"xml"];
+//        NSData * data = [[NSData alloc] initWithContentsOfFile:resourcePath];
+//        [[WBSocketManager sharedInstance] downloadComplete:data];
+//    });
 }
 
 - (void)volumDidChnage {

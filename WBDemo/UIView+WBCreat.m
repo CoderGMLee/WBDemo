@@ -33,7 +33,7 @@
     button.frame = [self getFrame:model.mLocation sizeStr:model.mSize controlPageSize:model.controlPageSize];
     [button setTitle:model.mText forState:UIControlStateNormal];
     [button.titleLabel setTextAlignment:[self getTextAlignmentFromString:model.mTextAlign]];
-    UIFont * font =[UIFont systemFontOfSize:[model.mFontSize floatValue] / 2];
+    UIFont * font = [self getFontForBaseFontNum:model.mFontSize controlPageSize:model.controlPageSize modelSize:model.mSize];
     [button.titleLabel setFont:font];
     [button setTitleColor:[self getColorWithString:model.mForeColorArgb] forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageWithData:model.mDownImage] forState:UIControlStateSelected];
@@ -46,7 +46,7 @@
 + (UILabel *)createLabelWithModel:(WBTextViewModel *)model {
     UILabel * label = [[UILabel alloc] init];
     label.frame = [self getFrame:model.mLocation sizeStr:model.mSize controlPageSize:model.controlPageSize];
-    label.font = [UIFont systemFontOfSize:[model.mFontSize floatValue] / 2];
+    label.font = [self getFontForBaseFontNum:model.mFontSize controlPageSize:model.controlPageSize modelSize:model.mSize];
     label.textAlignment = [self getTextAlignmentFromString:model.mTextAlign];
     label.textColor = [self getColorWithString:model.mForeColorArgb];
     label.backgroundColor = [self getColorWithString:model.mBackColorArgb];
@@ -93,32 +93,32 @@
     return CGRectMake(x * widRatio, y * heiRatio, width * widRatio, height * heiRatio);
 }
 
-//+ (UIFont *)getFontForBaseFontNum:(NSString *)fontNum controlPageSize:(NSString *)pageSize modelSize:(NSString *)modelSize {
-//
-//    NSInteger baseFont = [fontNum integerValue];
-//    NSArray * controlSizeArr = [pageSize componentsSeparatedByString:@","];
-//    NSArray * sizeArr = [modelSize componentsSeparatedByString:@","];
-//
-//    CGFloat controlWid = 0, width = 0, height = 0, controlHei = 0, widRatio = 0, heiRatio = 0;
-//    if (controlSizeArr.count == 2) {
-//        controlWid = [controlSizeArr[0] floatValue];
-//        controlHei = [controlSizeArr[1] floatValue];
-//    }
-//
-//
-//    if (sizeArr.count == 2) {
-//        NSString * widString = sizeArr[0];
-//        NSString * heiString = sizeArr[1];
-//        width = [widString floatValue] / 2;
-//        height = [heiString floatValue] / 2;
-//    }
-//
-//    widRatio = (SCREEN_WID * 2) / controlWid;
-//    heiRatio = (SCREEN_HEI * 2) / controlHei;
-//
-//    UIFont * font = [UIFont systemFontOfSize:baseFont * heiRatio];
-//    return font;
-//}
++ (UIFont *)getFontForBaseFontNum:(NSString *)fontNum controlPageSize:(NSString *)pageSize modelSize:(NSString *)modelSize {
+
+    NSInteger baseFont = [fontNum integerValue];
+    NSArray * controlSizeArr = [pageSize componentsSeparatedByString:@","];
+    NSArray * sizeArr = [modelSize componentsSeparatedByString:@","];
+
+    CGFloat controlWid = 0, width = 0, height = 0, controlHei = 0, widRatio = 0, heiRatio = 0;
+    if (controlSizeArr.count == 2) {
+        controlWid = [controlSizeArr[0] floatValue];
+        controlHei = [controlSizeArr[1] floatValue];
+    }
+
+
+    if (sizeArr.count == 2) {
+        NSString * widString = sizeArr[0];
+        NSString * heiString = sizeArr[1];
+        width = [widString floatValue] / 2;
+        height = [heiString floatValue] / 2;
+    }
+
+    widRatio = (SCREEN_WID * 2) / controlWid;
+    heiRatio = (SCREEN_HEI * 2) / controlHei;
+
+    UIFont * font = [UIFont systemFontOfSize:baseFont * widRatio / 2];
+    return font;
+}
 
 + (NSTextAlignment)getTextAlignmentFromString:(NSString *)string {
 

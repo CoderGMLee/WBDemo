@@ -52,12 +52,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WBDemo/WBSocketManager.m"
-            timestampString = "514374810.091292"
+            timestampString = "514384654.732346"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "459"
-            endingLineNumber = "459"
-            landmarkName = "-socket:didConnectToHost:port:"
+            startingLineNumber = "403"
+            endingLineNumber = "403"
+            landmarkName = "-sendSessionCommand:machineName:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -68,12 +68,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WBDemo/WBSocketManager.m"
-            timestampString = "514374842.546341"
+            timestampString = "514384231.431704"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "397"
-            endingLineNumber = "397"
-            landmarkName = "-sendSessionCommand:machineName:"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
+            landmarkName = "-onSocket:didWriteDataWithTag:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WBDemo/WBSocketManager.m"
+            timestampString = "514384412.044646"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "259"
+            endingLineNumber = "259"
+            landmarkName = "-onSocketDidDisconnect:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

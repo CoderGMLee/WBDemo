@@ -49,11 +49,6 @@
     AsyncUdpSocket *_broadUdpSocket;
     //接受PC的XML文件
     AsyncSocket * _tcpSocket;
-    //给其他中控机发送TCP指令
-    AsyncSocket * _tcpMessageSocket;
-
-    //重复指令socket
-    GCDAsyncSocket * _repeatSocket;
 
     NSMutableArray * _udpArray; //存放监听广播的udp
     NSMutableArray * _tcpArray;
@@ -236,6 +231,8 @@
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
     NSLog(@"%@",err.localizedDescription);
+    _totalLen = 0;
+    _resultData = nil;
 }
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
@@ -247,12 +244,13 @@
     if (tag == KTcpSendCommandTag) {
         NSLog(@"发送指令成功");
     }
-    [_tcpMessageSocket disconnect];
 }
+//指令socket和文件传输socket断开链接都会调用
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     [SVProgressHUD dismiss];
-    NSString * str = [NSString stringWithFormat:@"断开链接  接收文件大小 %ld  文件总大小 : %lld",_resultData.length,_totalLen];
-    [self disconnectDownloadSocket:sock];
+    NSLog(@"断开链接");
+//    NSString * str = [NSString stringWithFormat:@"断开链接  接收文件大小 %ld  文件总大小 : %lld",_resultData.length,_totalLen];
+//    [self disconnectDownloadSocket:sock];
 }
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -325,7 +323,7 @@
     [self.commandStateDic setObject:@(group) forKey:[self commandStatedicKey:ipAddress name:orderString]];
     if (![_machineDic.allKeys containsObject:name]) {
         //showInfoWithStatus
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
         return;
     }
     if (ipAddress.length == 0) {
@@ -340,14 +338,12 @@
     }
 
     [self.cmdDic setObject:@([orderString integerValue]) forKey:ipAddress];
-    if (_tcpMessageSocket == nil) {
-        _tcpMessageSocket = [[AsyncSocket alloc] initWithDelegate:self];
-    }
 
     NSError * error = nil;
-    //断开上一次的链接
-//    [_tcpMessageSocket disconnect];
-    [_tcpMessageSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
+
+    AsyncSocket * messageSocket = [[AsyncSocket alloc] initWithDelegate:self];
+    [messageSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
+    [_tcpArray addObject:messageSocket];
 
     if (error) {
         NSLog(@"TCP connect fail");
@@ -365,7 +361,7 @@
     [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
     if (![_machineDic.allKeys containsObject:name]) {
         //showInfoWithStatus
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
         return;
     }
     if (ipAddress.length == 0) {
@@ -378,19 +374,6 @@
         [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
         return;
     }
-//    if (!_repeatSocket) {
-//        NSError * error = nil;
-//        _repeatSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//        [_repeatSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
-//        if (error) {
-//            NSLog(@"TCP connect fail");
-//            [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
-//        }
-//    }
-//
-//    if ([_repeatSocket isConnected]) {
-//        [self sendCommand:ipAddress gcdSocked:_repeatSocket];
-//    }
     GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     [socket connectToHost:ipAddress onPort:KUdpMessagePort error:nil];
     [self.sessionSockets addObject:socket];
@@ -436,10 +419,6 @@
 }
 
 - (void)repeatMessageSendFinish {
-    if (_repeatSocket) {
-        [_repeatSocket disconnect];
-        _repeatSocket = nil;
-    }
     for (AsyncSocket * sock in self.sessionSockets) {
         [sock disconnect];
     }
@@ -453,8 +432,6 @@
     [self sendCommand:host gcdSocked:sock];
     [sock readDataWithTimeout:-1 tag:1000];
     [self.sessionSockets addObject:sock];
-//    [self sendCommand:host gcdSocked:_repeatSocket];
-//    [_repeatSocket readDataWithTimeout:-1 tag:1000];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
