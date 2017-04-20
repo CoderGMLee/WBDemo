@@ -254,7 +254,7 @@
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     [SVProgressHUD dismiss];
     NSString * str = [NSString stringWithFormat:@"断开链接  接收文件大小 %ld  文件总大小 : %lld",_resultData.length,_totalLen];
-    [SVProgressHUD showInfoWithStatus:str];
+    [self disconnectDownloadSocket:sock];
 }
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -276,13 +276,7 @@
             }
             [_tcpArray addObject:sock];
             if ( _resultData.length >= _totalLen && _totalLen != 0) {
-                [self downloadComplete:_resultData];
-                [sock disconnect];
-                _resultData = nil;
-                _totalLen = 0;
-                _udpSocket = nil;
-                [_udpArray removeAllObjects];
-                [_tcpArray removeAllObjects];
+                [self disconnectDownloadSocket:sock];
             };
             CFSocketRef cfsock = [sock getCFSocket];
             CFSocketNativeHandle rawsock = CFSocketGetNative(cfsock);
@@ -294,8 +288,16 @@
     });
 }
 
-
-
+//断开下载文件的链接
+- (void)disconnectDownloadSocket:(AsyncSocket *)sock {
+    [self downloadComplete:_resultData];
+    [sock disconnect];
+    _resultData = nil;
+    _totalLen = 0;
+    _udpSocket = nil;
+    [_udpArray removeAllObjects];
+    [_tcpArray removeAllObjects];
+}
 
 //MARK:- 解析文件
 - (void)downloadComplete:(NSData *)totalData {
