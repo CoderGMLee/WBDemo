@@ -1,0 +1,6 @@
+target 'WBDemo' do
+
+pod 'SVProgressHUD'
+pod 'CocoaAsyncSocket'  
+pod 'RealReachability'
+end

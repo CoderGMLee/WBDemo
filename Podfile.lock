@@ -1,0 +1,24 @@
+PODS:
+  - CocoaAsyncSocket (7.5.1):
+    - CocoaAsyncSocket/GCD (= 7.5.1)
+  - CocoaAsyncSocket/GCD (7.5.1)
+  - RealReachability (1.1.8):
+    - RealReachability/Connection (= 1.1.8)
+    - RealReachability/Ping (= 1.1.8)
+  - RealReachability/Connection (1.1.8)
+  - RealReachability/Ping (1.1.8)
+  - SVProgressHUD (2.1.2)
+
+DEPENDENCIES:
+  - CocoaAsyncSocket
+  - RealReachability
+  - SVProgressHUD
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: e0a7e93b2ffa411592ff87e58524fbbc9b95b4fa
+  RealReachability: e6c8a2bbffa316006e8c282efc1ee2567d61a920
+  SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
+
+PODFILE CHECKSUM: a97a7a4a92249f18c420b235477565d14d1b131f
+
+COCOAPODS: 1.0.1
