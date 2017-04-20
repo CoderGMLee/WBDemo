@@ -357,30 +357,27 @@
 
 //发送重复指令
 - (void)sendSessionCommand:(NSString *)orderString machineName:(NSString *)name {
-//    if (name.length == 0) {
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备名称为空",name]];
-//        return;
-//    }
-//    NSString * ipAddress = _machineDic[name];
-//    [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
-//    if (![_machineDic.allKeys containsObject:name]) {
-//        //showInfoWithStatus
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
-//        return;
-//    }
-//    if (ipAddress.length == 0) {
-//        NSLog(@"%@ 中控机地址为空",name);
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备IP地址为空",name]];
-//        return;
-//    }
-//
-//    if (orderString.length == 0) {
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
-//        return;
-//    }
+    if (name.length == 0) {
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备名称为空",name]];
+        return;
+    }
+    NSString * ipAddress = _machineDic[name];
+    [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
+    if (![_machineDic.allKeys containsObject:name]) {
+        //showInfoWithStatus
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
+        return;
+    }
+    if (ipAddress.length == 0) {
+        NSLog(@"%@ 中控机地址为空",name);
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备IP地址为空",name]];
+        return;
+    }
 
-
-    NSString * ipAddress = @"10.12.9.52";
+    if (orderString.length == 0) {
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
+        return;
+    }
 //    if (!_repeatSocket) {
 //        NSError * error = nil;
 //        _repeatSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
