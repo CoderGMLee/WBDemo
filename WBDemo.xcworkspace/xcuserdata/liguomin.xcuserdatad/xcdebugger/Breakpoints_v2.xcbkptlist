@@ -35,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WBDemo/AppDelegate.m"
-            timestampString = "514372204.086256"
+            filePath = "WBDemo/WBSocketManager.m"
+            timestampString = "514372818.455538"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "-applicationDidEnterBackground:"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "-sendMessageForResponse:port:socket:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -52,12 +52,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WBDemo/WBSocketManager.m"
-            timestampString = "514372818.455538"
+            timestampString = "514374810.091292"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
-            landmarkName = "-sendMessageForResponse:port:socket:"
+            startingLineNumber = "459"
+            endingLineNumber = "459"
+            landmarkName = "-socket:didConnectToHost:port:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WBDemo/WBSocketManager.m"
+            timestampString = "514374842.546341"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
+            landmarkName = "-sendSessionCommand:machineName:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

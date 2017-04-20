@@ -357,44 +357,46 @@
 
 //发送重复指令
 - (void)sendSessionCommand:(NSString *)orderString machineName:(NSString *)name {
-    if (name.length == 0) {
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备名称为空",name]];
-        return;
-    }
-    NSString * ipAddress = _machineDic[name];
-    [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
-    if (![_machineDic.allKeys containsObject:name]) {
-        //showInfoWithStatus
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
-        return;
-    }
-    if (ipAddress.length == 0) {
-        NSLog(@"%@ 中控机地址为空",name);
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备IP地址为空",name]];
-        return;
-    }
+//    if (name.length == 0) {
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备名称为空",name]];
+//        return;
+//    }
+//    NSString * ipAddress = _machineDic[name];
+//    [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
+//    if (![_machineDic.allKeys containsObject:name]) {
+//        //showInfoWithStatus
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
+//        return;
+//    }
+//    if (ipAddress.length == 0) {
+//        NSLog(@"%@ 中控机地址为空",name);
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备IP地址为空",name]];
+//        return;
+//    }
+//
+//    if (orderString.length == 0) {
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
+//        return;
+//    }
 
-    if (orderString.length == 0) {
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
-        return;
-    }
 
-    if (!_repeatSocket) {
-        NSError * error = nil;
-        _repeatSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-        [_repeatSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
-        if (error) {
-            NSLog(@"TCP connect fail");
-            [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
-        }
-    }
-
-    if ([_repeatSocket isConnected]) {
-        [self sendCommand:ipAddress gcdSocked:_repeatSocket];
-    }
-//    GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//    [socket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
-//    [self.sessionSockets addObject:socket];
+    NSString * ipAddress = @"10.12.9.52";
+//    if (!_repeatSocket) {
+//        NSError * error = nil;
+//        _repeatSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+//        [_repeatSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
+//        if (error) {
+//            NSLog(@"TCP connect fail");
+//            [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
+//        }
+//    }
+//
+//    if ([_repeatSocket isConnected]) {
+//        [self sendCommand:ipAddress gcdSocked:_repeatSocket];
+//    }
+    GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [socket connectToHost:ipAddress onPort:KUdpMessagePort error:nil];
+    [self.sessionSockets addObject:socket];
 }
 
 - (void)sendCommand:(NSString *)host socked:(AsyncSocket *)sock {
@@ -441,13 +443,25 @@
         [_repeatSocket disconnect];
         _repeatSocket = nil;
     }
+    for (AsyncSocket * sock in self.sessionSockets) {
+        [sock disconnect];
+    }
+    [self.sessionSockets removeAllObjects];
 }
 
 #pragma mark - GCDAsyncSocketDelegate
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
-    [self sendCommand:host gcdSocked:_repeatSocket];
-    [_repeatSocket readDataWithTimeout:-1 tag:1000];
+
+    [self sendCommand:host gcdSocked:sock];
+    [sock readDataWithTimeout:-1 tag:1000];
+    [self.sessionSockets addObject:sock];
+//    [self sendCommand:host gcdSocked:_repeatSocket];
+//    [_repeatSocket readDataWithTimeout:-1 tag:1000];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
+    NSLog(@"重复信息发送成功");
 }
 
 - (void)sendCommand:(NSString *)host gcdSocked:(GCDAsyncSocket *)gcdSock {

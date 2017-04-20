@@ -57,7 +57,7 @@
 
 //    测试数据
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSString * resourcePath = [[NSBundle mainBundle] pathForResource:@"download" ofType:@"xml"];
+        NSString * resourcePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"xml"];
         NSData * data = [[NSData alloc] initWithContentsOfFile:resourcePath];
         [[WBSocketManager sharedInstance] downloadComplete:data];
     });
