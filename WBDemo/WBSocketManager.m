@@ -68,7 +68,6 @@
 @property (nonatomic, strong)NSMutableDictionary * commandStateDic;
 @property (nonatomic, strong)NSMutableArray * sessionSockets;
 @property (nonatomic, strong)NSMutableArray * commandBroadArr;
-@property (nonatomic, assign)NSInteger intervalTime;
 @end
 
 
@@ -89,7 +88,6 @@
         _udpArray = [NSMutableArray array];
         _tcpArray = [NSMutableArray array];
         _machineDic = [NSMutableDictionary dictionary];
-        _intervalTime = 0;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseError:) name:KNotiParseError object:nil];
     }
     return self;
@@ -265,14 +263,13 @@
             if (_resultData) {
                 [SVProgressHUD showProgress:(CGFloat)_resultData.length / (CGFloat)_totalLen];
                 [_resultData appendData:data];
-                self.intervalTime = 0;
             }
             if (!_resultData) {
                 _resultData = [NSMutableData data];
                 NSDictionary * jsonDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
                 _totalLen = [jsonDic[@"len"] longLongValue];
                 NSString * downLoad = @"start download";
-                [sock writeData:[downLoad dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:KTcpReceiveTag];
+                [sock writeData:[downLoad dataUsingEncoding:NSUTF8StringEncoding] withTimeout:10 tag:KTcpReceiveTag];
             }
             [_tcpArray addObject:sock];
             if ( _resultData.length >= _totalLen && _totalLen != 0) {
@@ -283,7 +280,7 @@
             int flag = 1;
             int result = setsockopt(rawsock, IPPROTO_TCP, TCP_NODELAY,
                                     (char *)&flag, sizeof(int));
-            [sock readDataWithTimeout:-1 tag:KTcpReceiveTag];
+            [sock readDataWithTimeout:10 tag:KTcpReceiveTag];
         }
     });
 }
