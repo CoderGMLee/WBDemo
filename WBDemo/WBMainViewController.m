@@ -33,7 +33,6 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseCompleteHandle:) name:KNotiParseComplete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseErrorHandle:) name:KNotiParseError object:nil];
-
     self.startBGView = [[NSBundle mainBundle] loadNibNamed:@"WBStartView" owner:nil options:nil][0];
     self.startBGView.frame = self.view.bounds;
     [self.view addSubview:self.startBGView];

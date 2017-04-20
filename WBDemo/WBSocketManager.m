@@ -412,6 +412,10 @@
 
     WBJustRequest * request = [[WBJustRequest alloc] initWithType:0x0];
     NSData * sockedData = [request getData];
+    if (_broadUdpSocket) {
+        [_broadUdpSocket close];
+        _broadUdpSocket = nil;
+    }
     if (!_broadUdpSocket) {
         _broadUdpSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
         NSError * error = nil;
