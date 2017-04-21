@@ -150,11 +150,9 @@
 }
 
 #pragma mark - AsyncUdpSocketDelegate
-//UDP 消息发送成功
+//UDP 消息发送成功   发送广播
 - (void)onUdpSocket:(AsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
-
     if (tag == KUdpBroadTag) {
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"广播发送成功 ip :%@ port : %d",sock.connectedHost,sock.connectedPort]];
         [_broadUdpSocket receiveWithTimeout:-1 tag:KUdpBroadTag];
         [self.commandBroadArr addObject:sock];
         [sock receiveWithTimeout:-1 tag:KUdpBroadTag];
@@ -169,16 +167,12 @@
     NSLog(@"设备信息发送失败 %s",__func__);
 }
 
-//UDP 收到消息  发送本机信息
+//UDP 收到消息  发送本机信息  收到PC消息和收到中控机的设备信息在这里处理
 - (BOOL)onUdpSocket:(AsyncUdpSocket *)sock didReceiveData:(NSData *)data withTag:(long)tag fromHost:(NSString *)host port:(UInt16)port {
     NSLog(@"收到UDP消息");
     dispatch_async(dispatch_get_main_queue(), ^{
         if (tag >= KUdpBaseTag && tag <= KUdpBaseTag + 20) {
             //接收到电脑端的广播后发送自身的IP和端口给电脑
-//            NSString * dataString = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-//            NSData *decodedData = [[NSData alloc] initWithBase64EncodedString:dataString options:0];
-//            NSString *decodedString = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
-//            NSLog(@"dataString : %@ host: %@  port :%d count:%ld",decodedString,host,port, _udpArray.count);
             NSLog(@"%s",__func__);
             [_udpSocket receiveWithTimeout:-1 tag:tag];
             [sock receiveWithTimeout:-1 tag:tag];
@@ -186,7 +180,6 @@
             [self sendMessageForResponse:host port:port socket:sock];
         } else if (tag == KUdpBroadTag){
             //本身发出广播后，其他中控机返回的消息中包含IP和name
-//            [SVProgressHUD showInfoWithStatus:@"接收到了中控机的数据"];
             [self saveMachineName:data];
             [_broadUdpSocket receiveWithTimeout:-1 tag:KUdpBroadTag];
         }
@@ -194,7 +187,8 @@
     return true;
 }
 
-//保存设备信息
+
+//MARk:- 保存设备信息
 - (void)saveMachineName:(NSData *)data {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableString * addressStr = [[NSMutableString alloc] init];
@@ -215,8 +209,6 @@
         char str[40] = {};
         [data getBytes:str range:NSMakeRange(52, 40)];
         NSString * name = [NSString stringWithUTF8String:str];
-//        NSString * logStr = [NSString stringWithFormat:@"名称： %@, 地址 %@",name,addressStr];
-        //    [SVProgressHUD  showInfoWithStatus:logStr];
         [_machineDic setObject:addressStr forKey:name];
     });
 }
@@ -250,7 +242,6 @@
     [SVProgressHUD dismiss];
     NSLog(@"断开链接");
 //    NSString * str = [NSString stringWithFormat:@"断开链接  接收文件大小 %ld  文件总大小 : %lld",_resultData.length,_totalLen];
-//    [self disconnectDownloadSocket:sock];
 }
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -322,8 +313,6 @@
     NSString * ipAddress = _machineDic[name];
     [self.commandStateDic setObject:@(group) forKey:[self commandStatedicKey:ipAddress name:orderString]];
     if (![_machineDic.allKeys containsObject:name]) {
-        //showInfoWithStatus
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
         return;
     }
     if (ipAddress.length == 0) {
@@ -360,8 +349,6 @@
     NSString * ipAddress = _machineDic[name];
     [self.commandStateDic setObject:@(false) forKey:[self commandStatedicKey:ipAddress name:orderString]];
     if (![_machineDic.allKeys containsObject:name]) {
-        //showInfoWithStatus
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"在当前网路中，没有发现%@设备   所有这设备信息包括：%@",name,_machineDic]];
         return;
     }
     if (ipAddress.length == 0) {
