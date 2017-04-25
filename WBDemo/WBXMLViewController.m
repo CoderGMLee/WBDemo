@@ -177,11 +177,16 @@
             if (self.selectBtns.count >= 1) {
                 WBButton * btn = self.selectBtns[0];
                 if ([btn.buttonModel.VariableName isEqualToString:@"X1"]) {
-                    [self.selectBtns removeAllObjects];
-                    [self.selectBtns addObject:button];
-                    [button setSelected:true];
-                    [btn setSelected:false];
-                    return;
+                    if ([btn isEqual:button]) {
+                        [self.selectBtns removeAllObjects];
+                        [button setSelected:false];
+                    } else {
+                        [self.selectBtns removeAllObjects];
+                        [self.selectBtns addObject:button];
+                        [button setSelected:true];
+                        [btn setSelected:false];
+                        return;
+                    }
                 }
             }
             for (UIButton * btn in self.selectBtns) {
@@ -204,11 +209,16 @@
             if (self.selectBtns.count >= 1) {
                 WBButton * btn = self.selectBtns[0];
                 if ([btn.buttonModel.VariableName isEqualToString:@"X2"]) {
-                    [self.selectBtns removeAllObjects];
-                    [self.selectBtns addObject:button];
-                    [button setSelected:true];
-                    [btn setSelected:false];
-                    return;
+                    if ([btn isEqual:button]) {
+                        [self.selectBtns removeAllObjects];
+                        [button setSelected:false];
+                    } else {
+                        [self.selectBtns removeAllObjects];
+                        [self.selectBtns addObject:button];
+                        [button setSelected:true];
+                        [btn setSelected:false];
+                        return;
+                    }
                 }
             }
 
@@ -240,7 +250,7 @@
     UIView * containerView = [self loadCustomViewWithModel:model];
     containerView.frame = self.currentXMLView.frame;
     [self.view addSubview:containerView];
-
+    [self.currentXMLView removeFromSuperview];
     self.currentXMLView = containerView;
     self.pageIndex = pageIndex;
 

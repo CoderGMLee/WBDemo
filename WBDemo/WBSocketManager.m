@@ -287,8 +287,8 @@
 
 //MARK:- 解析文件
 - (void)downloadComplete:(NSData *)totalData {
-    NSString * logStr = [NSString stringWithFormat:@"视图文件下载成功  总大小：%ld",(unsigned long)totalData.length];
-    [SVProgressHUD showInfoWithStatus:logStr];
+//    NSString * logStr = [NSString stringWithFormat:@"视图文件下载成功  总大小：%ld",(unsigned long)totalData.length];
+//    [SVProgressHUD showInfoWithStatus:logStr];
     [[WBFileManager sharedInstance] saveXMLFile:totalData];
     [[WBParse sharedInstance] parseWithData:totalData];
 }

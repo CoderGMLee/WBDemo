@@ -15,6 +15,7 @@
 @property (nonatomic, copy) NSString * curProperty;
 @property (nonatomic, copy) NSString * curPropertyName;
 @property (nonatomic, copy) NSString * curImagePropertyName;
+@property (nonatomic, copy) NSMutableString * curPropertyString;
 @end
 
 @implementation WBParse
@@ -247,17 +248,24 @@
 //发现节点值时
 -(void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 
-    if ( ([self.curProperty isEqualToString:@"Property"] && ![string containsString:@"\n"]) || [self.curProperty isEqualToString:@"Binary"] ) {
-        if (self.curSubModel == nil) {
-            [self setPropertyForModel:self.curControlModel withKey:self.curPropertyName value:string];
-        } else {
-            [self setPropertyForModel:self.curSubModel withKey:self.curPropertyName value:string];
-        }
+    if (_curPropertyString == nil) {
+        _curPropertyString = [NSMutableString string];
+    }
+    if ((string.length > 0 && ![string containsString:@"\n"]) || [self.curProperty isEqualToString:@"Binary"]) {
+        [_curPropertyString appendString:string];
     }
 }
 
 // 结束节点时
 -(void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+
+    if ( ([self.curProperty isEqualToString:@"Property"] && ![_curPropertyString containsString:@"\n"]) || [self.curProperty isEqualToString:@"Binary"] ) {
+        if (self.curSubModel == nil) {
+            [self setPropertyForModel:self.curControlModel withKey:self.curPropertyName value:_curPropertyString];
+        } else {
+            [self setPropertyForModel:self.curSubModel withKey:self.curPropertyName value:_curPropertyString];
+        }
+    }
 
     if ([elementName isEqualToString:@"Object"]) {
         if (self.curSubModel == nil) {
@@ -268,6 +276,8 @@
             self.curSubModel = nil;
         }
     }
+    _curPropertyString = nil;
+    self.curProperty = nil;
 }
 
 //解析结束
