@@ -372,6 +372,7 @@
     WBJustAction * action = [[WBJustAction alloc] initWithCmd:cmd isGroup:isGroup];
     NSData * actionData = [action getData];
     [sock writeData:actionData withTimeout:-1 tag:KTcpSendCommandTag];
+    [_tcpArray addObject:sock];
 }
 
 /**
