@@ -237,6 +237,7 @@
         NSLog(@"发送指令成功");
     }
 }
+
 //指令socket和文件传输socket断开链接都会调用
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     [SVProgressHUD dismiss];
@@ -329,7 +330,6 @@
     [self.cmdDic setObject:@([orderString integerValue]) forKey:ipAddress];
 
     NSError * error = nil;
-
     AsyncSocket * messageSocket = [[AsyncSocket alloc] initWithDelegate:self];
     [messageSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
     [_tcpArray addObject:messageSocket];
@@ -361,9 +361,18 @@
         [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
         return;
     }
-    GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    [socket connectToHost:ipAddress onPort:KUdpMessagePort error:nil];
-    [self.sessionSockets addObject:socket];
+//    GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+//    [socket connectToHost:ipAddress onPort:KUdpMessagePort error:nil];
+//    [self.sessionSockets addObject:socket];
+    NSError * error = nil;
+    AsyncSocket * messageSocket = [[AsyncSocket alloc] initWithDelegate:self];
+    [messageSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
+    [_tcpArray addObject:messageSocket];
+
+    if (error) {
+        NSLog(@"TCP connect fail");
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
+    }
 }
 
 - (void)sendCommand:(NSString *)host socked:(AsyncSocket *)sock {

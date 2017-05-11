@@ -126,18 +126,6 @@
     NSString * variableName = button.buttonModel.VariableName;
 
     //循环指令测试
-//    double time = 0.5;
-//    NSString * timerName = [self timerNameForButton:button];
-//    [[WBSocketManager sharedInstance] sendSessionCommand:commond machineName:button.buttonModel.CenterControlName];
-//    [[WBSocketManager sharedInstance] updSendOrder:commond machineName:button.buttonModel.CenterControlName];
-//    static NSInteger count = 0;
-//    [[DMTimer sharedInstance] scheduleDispatchTimerName:timerName timeInterval:time queue:dispatch_get_main_queue() repeats:true action:^{
-//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"时间间隔 ： %f  循环次数： %ld",time,(long)count]];
-//        [[WBSocketManager sharedInstance] sendSessionCommand:commond machineName:button.buttonModel.CenterControlName];
-//        count ++;
-//    }];
-//    return;
-
 
     if ([variableName isEqualToString:@"0"] || [variableName isEqualToString:@"none"]) {
         //非复合按钮
@@ -153,11 +141,11 @@
             [[WBSocketManager sharedInstance] updSendOrder:commond machineName:button.buttonModel.CenterControlName];
         } else {
             //循环指令
+            [[WBSocketManager sharedInstance] updSendOrder:commond machineName:button.buttonModel.CenterControlName];
             NSString * timerName = [self timerNameForButton:button];
-            [[WBSocketManager sharedInstance] sendSessionCommand:commond machineName:button.buttonModel.CenterControlName];
             static NSInteger count = 0;
             [[DMTimer sharedInstance] scheduleDispatchTimerName:timerName timeInterval:time queue:dispatch_get_main_queue() repeats:true action:^{
-                [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"时间间隔 ： %f  循环次数： %ld",time,(long)count]];
+//                [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"时间间隔 ： %f  循环次数： %ld",time,(long)count]];
                 [[WBSocketManager sharedInstance] sendSessionCommand:commond machineName:button.buttonModel.CenterControlName];
                 count ++;
             }];
@@ -247,6 +235,9 @@
     }
     [self.selectBtns removeAllObjects];
     WBControlModel * model = [[WBModelManager sharedInstance] controlModelAtIndex:pageIndex];
+    if (!model) {
+        return;
+    }
     UIView * containerView = [self loadCustomViewWithModel:model];
     containerView.frame = self.currentXMLView.frame;
     [self.view addSubview:containerView];
