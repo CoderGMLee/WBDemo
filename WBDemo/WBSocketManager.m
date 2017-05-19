@@ -48,13 +48,14 @@
     //给中控机发送广播消息
     AsyncUdpSocket *_broadUdpSocket;
     //接受PC的XML文件
-    AsyncSocket * _tcpSocket;
+//    AsyncSocket * _tcpSocket;
 
     NSMutableArray * _udpArray; //存放监听广播的udp
     NSMutableArray * _tcpArray;
     NSMutableData * _resultData;
     NSMutableDictionary * _machineDic;
 
+    GCDAsyncSocket * _gcdTcpScoket;
 
     long long _totalLen;
 }
@@ -89,19 +90,29 @@
 }
 
 - (void)initTcpSocket {
-    if (!_tcpSocket) {
-        _tcpSocket = [[AsyncSocket alloc] initWithDelegate:self];
+//    if (!_tcpSocket) {
+//        _tcpSocket = [[AsyncSocket alloc] initWithDelegate:self];
+//        NSError *error = nil;
+//        BOOL ret = [_tcpSocket acceptOnPort:KTcpPort error:&error];
+//        if (ret == NO) {
+//            NSLog(@"tcp bind error is %@", error);
+//        }
+//        [_tcpSocket readDataWithTimeout:-1 tag:KTcpReceiveTag];;
+//    }
+    if (!_gcdTcpScoket) {
+        _gcdTcpScoket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
         NSError *error = nil;
-        BOOL ret = [_tcpSocket acceptOnPort:KTcpPort error:&error];
+        BOOL ret = [_gcdTcpScoket acceptOnPort:KTcpPort error:&error];
         if (ret == NO) {
             NSLog(@"tcp bind error is %@", error);
         }
-        [_tcpSocket readDataWithTimeout:-1 tag:KTcpReceiveTag];;
+        [_gcdTcpScoket readDataWithTimeout:-1 tag:KTcpReceiveTag];;
     }
 }
 
 - (void)udpStartMonitor {
 
+    _udpSocket = nil;
     if (!_udpSocket) {
         _udpSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
     }
@@ -242,7 +253,6 @@
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     [SVProgressHUD dismiss];
     NSLog(@"断开链接");
-//    NSString * str = [NSString stringWithFormat:@"断开链接  接收文件大小 %ld  文件总大小 : %lld",_resultData.length,_totalLen];
 }
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -251,7 +261,7 @@
         if (tag == KTcpReceiveTag) {
             NSLog(@"接收到XML数据  %lu",(unsigned long)data.length);
             if (_resultData) {
-                [SVProgressHUD showProgress:(CGFloat)_resultData.length / (CGFloat)_totalLen];
+//                [SVProgressHUD showProgress:(CGFloat)_resultData.length / (CGFloat)_totalLen];
                 [_resultData appendData:data];
             }
             if (!_resultData) {
@@ -265,11 +275,6 @@
             if ( _resultData.length >= _totalLen && _totalLen != 0) {
                 [self disconnectDownloadSocket:sock];
             };
-            CFSocketRef cfsock = [sock getCFSocket];
-            CFSocketNativeHandle rawsock = CFSocketGetNative(cfsock);
-            int flag = 1;
-            int result = setsockopt(rawsock, IPPROTO_TCP, TCP_NODELAY,
-                                    (char *)&flag, sizeof(int));
             [sock readDataWithTimeout:10 tag:KTcpReceiveTag];
         }
     });
@@ -288,8 +293,6 @@
 
 //MARK:- 解析文件
 - (void)downloadComplete:(NSData *)totalData {
-//    NSString * logStr = [NSString stringWithFormat:@"视图文件下载成功  总大小：%ld",(unsigned long)totalData.length];
-//    [SVProgressHUD showInfoWithStatus:logStr];
     [[WBFileManager sharedInstance] saveXMLFile:totalData];
     [[WBParse sharedInstance] parseWithData:totalData];
 }
@@ -336,7 +339,7 @@
 
     if (error) {
         NSLog(@"TCP connect fail");
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
     }
 }
 
@@ -361,9 +364,6 @@
         [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@设备指令为空",name]];
         return;
     }
-//    GCDAsyncSocket * socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//    [socket connectToHost:ipAddress onPort:KUdpMessagePort error:nil];
-//    [self.sessionSockets addObject:socket];
     NSError * error = nil;
     AsyncSocket * messageSocket = [[AsyncSocket alloc] initWithDelegate:self];
     [messageSocket connectToHost:ipAddress onPort:KUdpMessagePort error:&error];
@@ -371,7 +371,7 @@
 
     if (error) {
         NSLog(@"TCP connect fail");
-        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
+//        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@  发送指令的TCP连接失败",error.localizedDescription]];
     }
 }
 
@@ -426,24 +426,50 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
 
-    [self sendCommand:host gcdSocked:sock];
-    [sock readDataWithTimeout:-1 tag:1000];
-    [self.sessionSockets addObject:sock];
+//    [self sendCommand:host gcdSocked:sock];
+//    [sock readDataWithTimeout:-1 tag:1000];
+//    [self.sessionSockets addObject:sock];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
+    [_tcpArray addObject:newSocket];
+    [newSocket readDataWithTimeout:-1 tag:KTcpReceiveTag];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (tag == KTcpReceiveTag) {
+            NSLog(@"接收到XML数据  %lu",(unsigned long)data.length);
+            if (_resultData) {
+//                [SVProgressHUD showProgress:(CGFloat)_resultData.length / (CGFloat)_totalLen];
+                [_resultData appendData:data];
+            }
+            if (!_resultData) {
+                _resultData = [NSMutableData data];
+                NSDictionary * jsonDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                _totalLen = [jsonDic[@"len"] longLongValue];
+                NSString * downLoad = @"start download";
+                [sock writeData:[downLoad dataUsingEncoding:NSUTF8StringEncoding] withTimeout:10 tag:KTcpReceiveTag];
+            }
+            [_tcpArray addObject:sock];
+            if ( _resultData.length >= _totalLen && _totalLen != 0) {
+                [self disconnectDownloadSocket:nil];
+            };
+            [sock readDataWithTimeout:10 tag:KTcpReceiveTag];
+        }
+    });
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
-    NSLog(@"重复信息发送成功");
+
 }
 
 - (void)sendCommand:(NSString *)host gcdSocked:(GCDAsyncSocket *)gcdSock {
-    int32_t cmd = [[self.cmdDic objectForKey:host] intValue];
-    BOOL isGroup = [[self.commandStateDic objectForKey:[self commandStatedicKey:host name:[self.cmdDic objectForKey:host]]] boolValue];
-    WBJustAction * action = [[WBJustAction alloc] initWithCmd:cmd isGroup:isGroup];
-    NSData * actionData = [action getData];
-    [gcdSock writeData:actionData withTimeout:-1 tag:KTcpSendCommandTag];
+
+
 }
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err {
-    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"socket断开链接 error : %@",err.localizedDescription]];
+//    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"socket断开链接 error : %@",err.localizedDescription]];
 }
 
 

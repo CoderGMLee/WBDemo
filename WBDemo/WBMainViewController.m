@@ -80,13 +80,13 @@
 }
 
 - (void)parseErrorHandle:(NSNotification *)noti {
-    [[WBFileManager sharedInstance] clear];
-    self.mainView = [[NSBundle mainBundle] loadNibNamed:@"WBMainContainerView" owner:nil options:nil][0];
-    self.mainView.frame = self.view.bounds;
-    [self.view addSubview:self.mainView];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[WBSocketManager sharedInstance] udpStartMonitor];
-    });
+//    [[WBFileManager sharedInstance] clear];
+//    self.mainView = [[NSBundle mainBundle] loadNibNamed:@"WBMainContainerView" owner:nil options:nil][0];
+//    self.mainView.frame = self.view.bounds;
+//    [self.view addSubview:self.mainView];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [[WBSocketManager sharedInstance] udpStartMonitor];
+//    });
 }
 
 #pragma mark - WBMainViewDelegate

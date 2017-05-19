@@ -59,13 +59,77 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WBDemo/WBSocketManager.m"
-            timestampString = "516206399.29956"
+            filePath = "WBDemo/WBParse.m"
+            timestampString = "516362601.713412"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "303"
-            endingLineNumber = "303"
-            landmarkName = "-updSendOrder:machineName:"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "+parseWithData:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "+[WBParse parseWithData:]"
+                  moduleName = "WBDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liguomin/Desktop/Demos/WBDemo/WBDemo/WBParse.m"
+                  timestampString = "516893908.580662"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "284">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "+[WBParse parseWithData:]"
+                  moduleName = "WBDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liguomin/Desktop/Demos/WBDemo/WBDemo/WBParse.m"
+                  timestampString = "516893908.583926"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "300">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WBDemo/WBSocketManager.m"
+            timestampString = "516809156.102084"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "-disconnectDownloadSocket:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WBDemo/WBSocketManager.m"
+            timestampString = "516809156.102084"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "-udpStartMonitor"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

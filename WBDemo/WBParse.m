@@ -288,7 +288,7 @@
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
     NSLog(@"NSXML ERROR： %@",parseError);
-    [SVProgressHUD showInfoWithStatus:@"解析失败"];
+//    [SVProgressHUD showInfoWithStatus:@"解析失败"];
     [[NSNotificationCenter defaultCenter] postNotificationName:KNotiParseError object:nil];
 }
 

@@ -811,7 +811,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Huidong Feng (4GKMPNTFS4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Huidong Feng (4GKMPNTFS4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 7FLPKND722;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -834,7 +834,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dmall.dmallmainapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "90c3c035-d3b4-4540-b643-7bd234818017";
+				PROVISIONING_PROFILE = "7c50f8cf-3a5b-47ef-9abc-1498009ec773";
 				PROVISIONING_PROFILE_SPECIFIER = com.dmall.allmainapp;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -846,7 +846,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Dmall (beijing) E-commerce Co., Ltd.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Dmall (beijing) E-commerce Co., Ltd.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 7FLPKND722;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -869,8 +869,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dmall.dmallmainapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c98c3b6d-f89c-4355-a634-b5aa6cb57a40";
-				PROVISIONING_PROFILE_SPECIFIER = dmallmainappprofile;
+				PROVISIONING_PROFILE = "7c50f8cf-3a5b-47ef-9abc-1498009ec773";
+				PROVISIONING_PROFILE_SPECIFIER = com.dmall.allmainapp;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
